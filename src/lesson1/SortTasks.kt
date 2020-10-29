@@ -36,8 +36,8 @@ import kotlin.math.abs
  * 07:56:14 PM
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
- * время: O(N*logN)
- * память: O(N)
+ * Трудоемкость: O(N*logN)
+ * Ресурсоемкость: O(N)
  */
 fun sortTimes(inputName: String, outputName: String) {
     val sortedFile = StringBuilder()
@@ -90,16 +90,15 @@ fun sortTimes(inputName: String, outputName: String) {
  * Садовая 5 - Сидоров Петр, Сидорова Мария
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
- * Время:O(N*logN)
- * Память:O(N)
+ * Трудоемкость:O(N*logN)
+ * Ресурсоемкость:O(N)
  */
 fun sortAddresses(inputName: String, outputName: String) {
     val addressBook = mutableMapOf<String, MutableSet<String>>()
     for (line in File(inputName).readLines()) {
-        require(Regex("""^[\wа-яА-ЯЁё]+\s[\wа-яА-ЯЁё]+\s-\s[\wа-яА-ЯЁё-]+\s\d+$""").matches(line))
         val list = line.split(" - ")
         if (!addressBook.containsKey(list[1])) addressBook[list[1]] = mutableSetOf()
-        addressBook[list[1]]!!.add(list[0])
+        addressBook.getOrPut(list[1]) { mutableSetOf() }.add(list[0])
     }
     val sb = StringBuilder()
     addressBook.keys.sortedWith(
@@ -147,8 +146,8 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  *
- * Память: O(N)
- * Время: O(N)
+ * Трудоемкость: O(N)
+ * Ресурсоемкость: O(N)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
     val inputTemperature = mutableListOf<Int>()

@@ -2,6 +2,8 @@
 
 package lesson2
 
+import java.lang.StringBuilder
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -93,9 +95,34 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * При сравнении подстрок, регистр символов *имеет* значение.
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
+ *
+ * Трудоемкость - O(f * s)
+ * Ресурсоемкость - O(s)
+ *
+ * f - first string
+ * s - second string
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
+    val stringTable = Array(first.length) { Array(second.length) { 0 } }
+    var length = 0
+    var k = 0
+    val sb = StringBuilder()
+
+    for (i in first.indices) {
+        for (j in (second.length - 1) downTo 0) {
+            if (first[i] == second[j]) {
+                stringTable[i][j] = 1 + if (j == 0 || i == 0) 0 else stringTable[i - 1][j - 1]
+                if (length < stringTable[i][j]) {
+                    k = j
+                    length = stringTable[i][j]
+                }
+            } else stringTable[i][j] = 0
+        }
+    }
+
+    for (s in k + 1 - length..k)
+        sb.append(second[s])
+    return sb.toString()
 }
 
 /**
@@ -107,7 +134,29 @@ fun longestCommonSubstring(first: String, second: String): String {
  *
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
+ *
+ * Трудоемкость - O(n*log(log(n)))
+ * Ресурсоемкость - O(n)
  */
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    if (limit <= 1) return 0
+    var res = 0
+    val numbers = BooleanArray(limit + 1) { true }
+    var k = 2
+    while (k * k <= limit) {
+        if (numbers[k]) {
+            var g = k * k
+            while (g <= limit) {
+                numbers[g] = false
+                g += k
+            }
+        }
+        k++
+    }
+
+    for (i in 2..limit) {
+        if (numbers[i]) res++
+    }
+
+    return res
 }
