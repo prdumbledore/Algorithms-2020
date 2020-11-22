@@ -79,33 +79,34 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
      *
      * Средняя
      *
-     * Память:
+     * Время: O(logN) в лучшем случае, в худшем O(N), N - высота дерева
+     * Память: O(logN)
      */
     override fun remove(element: T): Boolean {
         val current = find(element)
 
         return if (current == null || element.compareTo(current.value) != 0) false
         else {
-            root = root?.let { remove(it, current) }
+            root = root?.let { removeN(it, current) }
             size--
             true
         }
     }
 
-    private fun remove(root: Node<T>?, current: Node<T>): Node<T>? {
+    private fun removeN(root: Node<T>?, current: Node<T>): Node<T>? {
         if (root == null) return null
 
         var node = root
 
         when (current.value.compareTo(node.value)) {
-            1 -> node.right = node.right?.let { remove(it, current) }
-            -1 -> node.left = node.left?.let { remove(it, current) }
+            1 -> node.right = node.right?.let { removeN(it, current) }
+            -1 -> node.left = node.left?.let { removeN(it, current) }
             else -> if (node.left != null && node.right != null) {
                 val minValue = Node(findSmallestValue(root.right!!))
                 minValue.right = node.right
                 minValue.left = node.left
                 node = minValue
-                node.right = remove(node.right, node)
+                node.right = removeN(node.right, node)
             } else
                 node = if (node.left != null) node.left else node.right
         }
@@ -144,6 +145,8 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Спецификация: [java.util.Iterator.hasNext] (Ctrl+Click по hasNext)
          *
          * Средняя
+         *
+         * Время: O(1)
          */
         override fun hasNext(): Boolean = stack.isNotEmpty()
 
@@ -159,6 +162,8 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Спецификация: [java.util.Iterator.next] (Ctrl+Click по next)
          *
          * Средняя
+         *
+         * Время: O(logN)
          */
         override fun next(): T {
             if (stack.isEmpty()) throw NoSuchElementException()
@@ -185,9 +190,12 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Спецификация: [java.util.Iterator.remove] (Ctrl+Click по remove)
          *
          * Сложная
+         *
+         * Время: O(N)
          */
         override fun remove() {
-            remove(current?.value ?: throw IllegalStateException())
+            check(current != null)
+            remove(current!!.value)
             current = null
         }
 
