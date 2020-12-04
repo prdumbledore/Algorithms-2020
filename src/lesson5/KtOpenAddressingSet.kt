@@ -151,7 +151,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         // Память: O(1)
         override fun remove() {
             if (prevIndex == -1 || storage[prevIndex] == null) throw IllegalStateException()
-            storage[prevIndex] = removed;
+            storage[prevIndex] = removed
             size--
 
         }
