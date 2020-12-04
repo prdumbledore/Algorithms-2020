@@ -1,8 +1,10 @@
 package lesson5
 
+
 /**
  * Множество(таблица) с открытой адресацией на 2^bits элементов без возможности роста.
  */
+@Suppress("UNCHECKED_CAST")
 class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>() {
     init {
         require(bits in 2..31)
@@ -51,7 +53,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         val startingIndex = element.startingIndex()
         var index = startingIndex
         var current = storage[index]
-        while (current != null) {
+        while (current != null && current != removed) {
             if (current == element) {
                 return false
             }
@@ -75,8 +77,28 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      *
      * Средняя
      */
+
+    // Время: O(1) - в лучшем случае, если сразу нашёл; O(N) - в худшем :(
+    // Память: O(1)
+
+    private object removed
+
     override fun remove(element: T): Boolean {
-        TODO("not implemented")
+        if (!contains(element)) return false
+        val startingIndex = element.startingIndex()
+        var index = startingIndex
+        var current = storage[index]
+        while (current != null) {
+            if (current == element) {
+                storage[index] = removed
+                size--
+                return true
+            }
+            index = (index + 1) % capacity
+            if (index == startingIndex) return false
+            current = storage[index]
+        }
+        return false
     }
 
     /**
@@ -89,7 +111,50 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      *
      * Средняя (сложная, если поддержан и remove тоже)
      */
-    override fun iterator(): MutableIterator<T> {
-        TODO("not implemented")
+    override fun iterator(): MutableIterator<T> = OpenAddressingSet()
+
+    inner class OpenAddressingSet : MutableIterator<T> {
+
+        private var currentIndex = 0
+        private var prevIndex = -1
+
+        // Время: O(1) - в лучшем случае, O(N) - в худшем
+        // Память: O(1)
+        override fun hasNext(): Boolean {
+            for (i in currentIndex until capacity) {
+                if (storage[i] != null && storage[i] != removed) {
+                    currentIndex = i
+                    return true
+                }
+            }
+            return false
+        }
+
+        // Время: O(1) - в лучшем случае, O(N) - в худшем
+        // Память: O(1)
+        override fun next(): T {
+            if (!hasNext()) throw IllegalStateException()
+
+            val nextObject = storage[currentIndex]
+            prevIndex = currentIndex
+            currentIndex++
+            for (i in currentIndex until capacity) {
+                if (storage[i] != null && storage[i] != removed) {
+                    currentIndex = i
+                    break
+                }
+            }
+            return nextObject as T
+        }
+
+        // Время: O(1)
+        // Память: O(1)
+        override fun remove() {
+            if (prevIndex == -1 || storage[prevIndex] == null) throw IllegalStateException()
+            storage[prevIndex] = removed;
+            size--
+
+        }
+
     }
 }

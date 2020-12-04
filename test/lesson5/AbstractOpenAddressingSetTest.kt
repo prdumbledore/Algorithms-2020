@@ -76,6 +76,41 @@ abstract class AbstractOpenAddressingSetTest {
                 )
             }
         }
+
+        val controlSet = mutableSetOf<String>()
+        val toRemove = "Anna Karenina"
+        controlSet.add("ffheewddsrfs")
+        controlSet.add("reeeeeeeeeey5")
+        controlSet.add("ghdrerr")
+        controlSet.add("55555555555555555555555555555")
+        controlSet.add("gsgggrg")
+        controlSet.add("GD23ADFEFEG")
+        controlSet.add("fgsrgw344gwsWWDW")
+        controlSet.add("erik")
+        controlSet.add(" ")
+        controlSet.add("dsfdgergffffffffff")
+        controlSet.add("Anna Karenina")
+        controlSet.add("Vladimir the RedSun")
+        controlSet.add("Elizabeth II")
+        controlSet.add("J.K. Rowling")
+        val openAddressingSet = create<String>(4)
+        for (element in controlSet) {
+            openAddressingSet += element
+        }
+        controlSet.remove(toRemove)
+
+        assertTrue(
+            openAddressingSet.remove(toRemove)
+        )
+        assertFalse(
+            openAddressingSet.contains(toRemove)
+        )
+        assertFalse(
+            openAddressingSet.remove(toRemove)
+        )
+        assertEquals(
+            controlSet.size, openAddressingSet.size
+        )
     }
 
     protected fun doIteratorTest() {
@@ -118,6 +153,46 @@ abstract class AbstractOpenAddressingSetTest {
             }
             println("All clear!")
         }
+
+        val controlSet = mutableSetOf<String>()
+        val toRemove = "ffheewddsrfs"
+        controlSet.add("ffheewddsrfs")
+        controlSet.add("reeeeeeeeeey5")
+        controlSet.add("ghdrerr")
+        controlSet.add("55555555555555555555555555555")
+        controlSet.add("gsgggrg")
+        controlSet.add("GD23ADFEFEG")
+        controlSet.add("fgsrgw344gwsWWDW")
+        controlSet.add("erik")
+        controlSet.add(" ")
+        controlSet.add("dsfdgergffffffffff")
+        controlSet.add("Anna Karenina")
+        controlSet.add("Vladimir the RedSun")
+        controlSet.add("Elizabeth II")
+        controlSet.add("J.K. Rowling")
+        val openAddressingSet = create<String>(6)
+        for (element in controlSet) {
+            openAddressingSet += element
+        }
+        controlSet.remove(toRemove)
+
+        val iterator1 = openAddressingSet.iterator()
+        val iterator2 = openAddressingSet.iterator()
+
+        while (iterator1.hasNext()) {
+            assertEquals(
+                iterator2.next(), iterator1.next()
+            )
+        }
+
+        assertFailsWith<IllegalStateException> {
+            iterator1.next()
+        }
+
+        assertFailsWith<IllegalStateException> {
+            iterator2.next()
+        }
+
     }
 
     protected fun doIteratorRemoveTest() {
@@ -175,5 +250,50 @@ abstract class AbstractOpenAddressingSetTest {
             }
             println("All clear!")
         }
+
+        val controlSet = mutableSetOf<String>()
+        val toRemove = "Anna Karenina"
+        controlSet.add("ffheewddsrfs")
+        controlSet.add("reeeeeeeeeey5")
+        controlSet.add("ghdrerr")
+        controlSet.add("55555555555555555555555555555")
+        controlSet.add("gsgggrg")
+        controlSet.add("GD23ADFEFEG")
+        controlSet.add("fgsrgw344gwsWWDW")
+        controlSet.add("erik")
+        controlSet.add(" ")
+        controlSet.add("dsfdgergffffffffff")
+        controlSet.add("Anna Karenina")
+        controlSet.add("Vladimir the RedSun")
+        controlSet.add("Elizabeth II")
+        controlSet.add("J.K. Rowling")
+        val openAddressingSet = create<String>(6)
+        for (element in controlSet) {
+            openAddressingSet += element
+        }
+        controlSet.remove(toRemove)
+
+        val iterator = openAddressingSet.iterator()
+
+
+        var counter = openAddressingSet.size
+        while (iterator.hasNext()) {
+            val element = iterator.next()
+            counter--
+            if (element == toRemove) {
+                iterator.remove()
+            }
+        }
+
+        counter = openAddressingSet.size
+
+        assertFailsWith<IllegalStateException> {
+            val element = iterator.next()
+            counter--
+            if (element == toRemove) {
+                iterator.remove()
+            }
+        }
+
     }
 }
