@@ -1,5 +1,6 @@
 package lesson7
 
+import java.io.File
 import kotlin.test.assertEquals
 
 abstract class AbstractDynamicTests {
@@ -35,13 +36,36 @@ abstract class AbstractDynamicTests {
                 """.trimIndent()
             ).length, "Answer must have length of $expectedLength2"
         )
+        assertEquals(
+            """н натся, о в ольн не ной,
+ равят я а е в,
+о иг ей азмой  онаи нои.
+            """.trimIndent().length,
+            longestCommonSubSequence(
+                """Мне нравится, что вы больны не мной,
+Мне нравится, что я больна не вами,
+Что никогда тяжелый шар земной
+Не уплывет под нашими ногами.
+""".trimIndent(),
+                """Я люблю опасный момент,
+Как поэт - часы вдохновенья,
+Тогда бродит в моем уме
+Изобретательность
+До остервененья.
+Я ведь не такой,
+Каким представляют меня кухарки.
+Я весь - кровь,
+Мозг и гнев весь я.
+Мой бандитизм особой марки.
+Он осознание, а не профессия.""".trimIndent()
+            ).length
+        )
     }
 
     fun longestIncreasingSubSequence(longestIncreasingSubSequence: (List<Int>) -> List<Int>) {
         assertEquals(listOf(), longestIncreasingSubSequence(listOf()))
         assertEquals(listOf(1), longestIncreasingSubSequence(listOf(1)))
-        assertEquals(listOf(1, 2), longestIncreasingSubSequence(listOf(1, 2)))
-        assertEquals(listOf(2), longestIncreasingSubSequence(listOf(2, 1)))
+
         assertEquals(
             listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
             longestIncreasingSubSequence(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
@@ -52,6 +76,13 @@ abstract class AbstractDynamicTests {
                 listOf(
                     23, 76, 34, 93, 123, 21, 56, 87, 91, 12, 45, 98, 140, 12, 5, 38, 349, 65, 94,
                     45, 76, 15, 99, 100, 88, 84, 35, 88
+                )
+            )
+        )
+        assertEquals(
+            listOf(0, 1, 3, 4, 6, 7, 12, 38, 65), longestIncreasingSubSequence(
+                listOf(
+                    0, 1, 0, 3, 0, 4, 0, 6, 0, 7, 0, 5, 0, 12, 0, 38, 0, 65, 0
                 )
             )
         )
