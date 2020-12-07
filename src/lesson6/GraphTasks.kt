@@ -2,6 +2,9 @@
 
 package lesson6
 
+import lesson6.impl.GraphBuilder
+import java.util.*
+
 /**
  * Эйлеров цикл.
  * Средняя
@@ -59,9 +62,43 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  * E    F    I
  * |
  * J ------------ K
+ *
+ * V - vertex, e - edge
+ *
+ * Время: O (V * E)
+ * Память: O(V + E)
  */
 fun Graph.minimumSpanningTree(): Graph {
-    TODO()
+    val graph = GraphBuilder()
+    if (vertices.isEmpty()) return graph.build()
+    val firstVertex = vertices.first()
+    val vertexSet = mutableSetOf(firstVertex)
+    val edgeSet = mutableSetOf<Graph.Edge>()
+
+    fun recurse(vertex: Graph.Vertex) {
+        for ((ver, edg) in getConnections(vertex)) {
+            if (!vertexSet.contains(ver)) {
+                vertexSet.add(ver)
+                edgeSet.add(edg)
+                recurse(ver)
+            }
+        }
+    }
+
+    recurse(firstVertex)
+
+    graph.addVertex(firstVertex.name)
+    if (edgeSet.first().begin == firstVertex)
+        for (edge in edgeSet) {
+            graph.addVertex(edge.end.name)
+            graph.addConnection(edge.begin, edge.end)
+        }
+    else for (edge in edgeSet) {
+        graph.addVertex(edge.begin.name)
+        graph.addConnection(edge.begin, edge.end)
+    }
+
+    return graph.build()
 }
 
 /**
@@ -113,9 +150,26 @@ fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
  * J ------------ K
  *
  * Ответ: A, E, J, K, D, C, H, G, B, F, I
+ *
+ * Время: O(N!)
+ * Память: O(N!)
  */
 fun Graph.longestSimplePath(): Path {
-    TODO()
+    var path = Path()
+    val stack = Stack<Path>()
+
+    vertices.forEach { stack.push(Path(it)) }
+
+    while (stack.isNotEmpty()) {
+        val currentPath = stack.pop()
+        if (path.length < currentPath.length) path = currentPath
+        val neighbours = getNeighbors(currentPath.vertices[currentPath.length])
+        for (ver in neighbours) {
+            if (ver !in currentPath) stack.push(Path(currentPath, this, ver))
+        }
+    }
+
+    return path
 }
 
 /**

@@ -80,7 +80,7 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
             }
         }
     }
-    var maxLength = counts.indices.maxBy { counts[it] } ?: 0
+    var maxLength = counts.indices.maxByOrNull { counts[it] } ?: 0
     val result = mutableListOf(list[maxLength])
     while (counts[maxLength] != 1) {
         maxLength = parent[maxLength]
