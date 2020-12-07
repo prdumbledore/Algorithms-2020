@@ -3,6 +3,7 @@
 package lesson7
 
 import java.lang.StringBuilder
+import java.util.*
 import kotlin.math.max
 
 /**
@@ -64,30 +65,48 @@ fun longestCommonSubSequence(first: String, second: String): String {
  * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
  * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
  *
- * Время: O(N^2)
+ * Время: O(N * logN)
  * Память: O(N)
  */
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
-    if (list.size <= 1) return list
+    val size = list.size
 
-    val counts = MutableList(list.size) { 1 }
-    val parent = MutableList(list.size) { -1 }
-    for (i in list.indices) {
-        for (j in 0 until i) {
-            if (list[j] < list[i] && counts[i] < counts[j] + 1) {
-                counts[i] = counts[j] + 1
-                parent[i] = j
+    if (size == 0) return emptyList()
+    if (size == 1) return list
+
+    val maxLengths = IntArray(size)
+    val binarySearch = IntArray(size)
+    val result = mutableListOf<Int>()
+
+    var length = 0
+    for (num in list.indices) {
+        val number = list[num]
+        var j = Arrays.binarySearch(binarySearch, 0, length, number)
+        if (j < 0) {
+            j = -(j + 1)
+        }
+
+        binarySearch[j] = number
+        if (j == length) {
+            length++
+        }
+        maxLengths[num] = j + 1
+    }
+
+
+    result.add(list[maxLengths.indexOf(length)])
+    length--
+    while (length != 0) {
+        for (i in maxLengths.indices) {
+            if (maxLengths[i] == length && list[i] < result.last()) {
+                result.add(list[i])
+                length--
+                break
             }
         }
     }
-    var maxLength = counts.indices.maxByOrNull { counts[it] } ?: 0
-    val result = mutableListOf(list[maxLength])
-    while (counts[maxLength] != 1) {
-        maxLength = parent[maxLength]
-        result.add(0, list[maxLength])
-    }
 
-    return result
+    return result.reversed()
 }
 
 /**
