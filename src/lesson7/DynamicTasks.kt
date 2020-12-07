@@ -109,6 +109,7 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
     return result.reversed()
 }
 
+
 /**
  * Самый короткий маршрут на прямоугольном поле.
  * Средняя
